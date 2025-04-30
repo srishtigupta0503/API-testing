@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>API Endpoint Scanner</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f7fc;
+            margin: 0;
+            padding: 0;
+        }
+        header {
+            background-color: #4CAF50;
+            color: white;
+            padding: 10px 0;
+            text-align: center;
+        }
+        h2 {
+            margin-top: 20px;
+            text-align: center;
+        }
+        .container {
+            max-width: 1200px;
+            margin: 20px auto;
+            padding: 20px;
+            background-color: white;
+            border-radius: 8px;
+            box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
+        }
+        table {
+            width: 100%;
+            margin-top: 30px;
+            border-collapse: collapse;
+            text-align: center;
+        }
+        th, td {
+            padding: 12px;
+            border: 1px solid #ddd;
+        }
+        th {
+            background-color: #4CAF50;
+            color: white;
+        }
+        tr:nth-child(even) {
+            background-color: #f2f2f2;
+        }
+        td {
+            font-size: 14px;
+        }
+        .btn {
+            background-color: #4CAF50;
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+        }
+        .btn:hover {
+            background-color: #45a049;
+        }
+        .form-container {
+            text-align: center;
+        }
+        input[type="text"] {
+            padding: 10px;
+            font-size: 16px;
+            border-radius: 5px;
+            border: 1px solid #ddd;
+            width: 60%;
+            margin-top: 10px;
+        }
+        input[type="text"]:focus {
+            outline: none;
+            border-color: #4CAF50;
+        }
+        .secure {
+            background-color: #4CAF50;
+            color: white;
+        }
+        .vulnerable {
+            background-color: #F44336;
+            color: white;
+        }
+        .warning {
+            background-color: #FFC107;
+            color: black;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <h1>🔍 API Endpoint Scanner</h1>
+    </header>
+    
+    <div class="container">
+        <h2>Scan API Endpoints for Your Website</h2>
+
+        
+        <div class="form-container">
+            <form action="/scan" method="post">
+                <label for="url">Enter Base URL (e.g., https://owasp-juice.shop or https://juice-shop.herokuapp.com):</label><br>
+                <input type="text" id="url" name="url" placeholder="Enter URL here" required><br><br>
+                <button type="submit" class="btn">Start Scan</button>
+            </form>
+        </div>
+
+        {% if results %}
+            <h3>Scan Results</h3>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Endpoint</th>
+                        <th>GET (Status & Vulnerability)</th>
+                        <th>POST (Status & Vulnerability)</th>
+                        <th>PUT (Status & Vulnerability)</th>
+                        <th>DELETE (Status & Vulnerability)</th>
+                    </tr>
+                </thead>
+                <tbody>
+                {% for result in results %}
+                    <tr>
+                        <td>{{ result.endpoint }}</td>
+                        <td class="{{ 'secure' if result.vulnerabilities['GET'] == 'Secure - OK' else 'vulnerable' }}">
+                            {{ result.methods['GET'] }} - {{ result.vulnerabilities['GET'] }}
+                        </td>
+                        <td class="{{ 'secure' if result.vulnerabilities['POST'] == 'Secure - OK' else 'vulnerable' }}">
+                            {{ result.methods['POST'] }} - {{ result.vulnerabilities['POST'] }}
+                        </td>
+                        <td class="{{ 'secure' if result.vulnerabilities['PUT'] == 'Secure - OK' else 'vulnerable' }}">
+                            {{ result.methods['PUT'] }} - {{ result.vulnerabilities['PUT'] }}
+                        </td>
+                        <td class="{{ 'secure' if result.vulnerabilities['DELETE'] == 'Secure - OK' else 'vulnerable' }}">
+                            {{ result.methods['DELETE'] }} - {{ result.vulnerabilities['DELETE'] }}
+                        </td>
+                    </tr>
+                {% endfor %}
+                </tbody>
+            </table>
+        {% endif %}
+    </div>
+</body>
+</html>
